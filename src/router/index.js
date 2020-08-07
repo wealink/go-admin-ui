@@ -53,7 +53,7 @@ export const constantRouters = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
-  },
+  }
   /*
   {
     path: '/example',
@@ -76,8 +76,6 @@ export const constantRouters = [
       }
     ]
   },
-  */
-
   {
     path: '/form',
     component: Layout,
@@ -160,6 +158,7 @@ export const constantRouters = [
       }
     ]
   }
+  */
   // 404 page must be placed at the end !!!
   // { path: '*', redirect: '/404', hidden: true }
 ]
@@ -178,16 +177,22 @@ export const asyncRouters = [
     meta: { roles: ['运维组'], title: '系统管理', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
+        path: 'role',
+        name: 'Role',
+        component: () => import('@/views/role'),
         meta: { roles: ['运维组'], title: '角色管理', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        path: 'user',
+        name: 'User',
+        component: () => import('@/views/user'),
         meta: { roles: ['运维组'], title: '用户管理', icon: 'tree' }
+      },
+      {
+        path: 'apirule',
+        name: 'Apirule',
+        component: () => import('@/views/apirule'),
+        meta: { roles: ['运维组'], title: '接口权限', icon: 'tree' }
       }
     ]
   },

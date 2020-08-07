@@ -14,6 +14,8 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import Pagination from '@/components/Pagination' // Pagination
+import { resetForm } from '@/utils/costum'
 
 /**
  * If you don't want to use mock-server
@@ -27,6 +29,20 @@ if (process.env.NODE_ENV === 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
 }
+// 全局组件挂载
+Vue.component('Pagination', Pagination)
+Vue.prototype.msgSuccess = function(msg) {
+  this.$message({ showClose: true, message: msg, type: 'success' })
+}
+Vue.prototype.msgError = function(msg) {
+  this.$message({ showClose: true, message: msg, type: 'error' })
+}
+Vue.prototype.msgInfo = function(msg) {
+  this.$message.info(msg)
+}
+
+// 全局方法挂载
+Vue.prototype.resetForm = resetForm
 
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
