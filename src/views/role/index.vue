@@ -52,6 +52,7 @@
             v-model="scope.row.status"
             active-value="0"
             inactive-value="1"
+            @change="handleStatusChange(scope.row)"
           />
         </template>
       </el-table-column>
@@ -226,6 +227,21 @@ export default {
         this.open = true
         this.title = '修改角色'
         this.isEdit = true
+      })
+    },
+    /** 角色状态修改 */
+    handleStatusChange(row) {
+      const text = row.status === '0' ? '启用' : '停用'
+      this.$confirm('确认要"' + text + '"' + row.name + '"角色吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return editRole(row)
+      }).then(() => {
+        this.msgSuccess(text + '成功')
+      }).catch(function() {
+        row.status = row.status === '0' ? '1' : '0'
       })
     },
     /** 删除按钮操作 */
