@@ -99,6 +99,16 @@
             >{{ dict.dictLabel }}</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="菜单权限">
+          <el-tree
+            ref="menu"
+            :data="menuOptions"
+            show-checkbox
+            node-key="id"
+            empty-text="加载中，请稍后"
+            :props="defaultProps"
+          />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submit">确 定</el-button>
@@ -109,6 +119,9 @@
 </template>
 <script>
 import { listRole, getRole, addRole, delRole, editRole } from '@/api/role'
+import { listTreeMenu } from '@/api/menu'
+import { listTreeRoleMenu } from '@/api/rolemenu'
+
 export default {
   name: 'Role',
   data() {
@@ -132,6 +145,8 @@ export default {
       // 是否显示弹出层
       openDataScope: false,
       isEdit: false,
+      // 菜单列表
+      menuOptions: [],
       // 日期范围
       dateRange: [],
       // 状态数据字典
@@ -172,6 +187,31 @@ export default {
         }
       )
     },
+    /** 查询菜单下拉树结构 */
+    getMenutreeselect() {
+      listTreeMenu().then(response => {
+        this.menuOptions = response.data
+      })
+    },
+    // 所有菜单节点数据
+    getMenuAllCheckedKeys() {
+      // 目前被选中的菜单节点
+      const checkedKeys = this.$refs.menu.getHalfCheckedKeys()
+      // 半选中的菜单节点
+      const halfCheckedKeys = this.$refs.menu.getCheckedKeys()
+      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
+      return checkedKeys
+    },
+    /** 根据角色ID查询菜单树结构 */
+    getRoleMenuTreeselect(roleId) {
+      listTreeRoleMenu(roleId).then(response => {
+        this.menuOptions = response.data.menus
+        this.$nextTick(() => {
+          //  明天要修改的内容
+          this.$refs.menu.setCheckedKeys(response.data.checkedKeys)
+        })
+      })
+    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageIndex = 1
@@ -184,10 +224,14 @@ export default {
     },
     /** 表单重置 */
     reset() {
+      if (this.$refs.menu !== undefined) {
+        this.$refs.menu.setCheckedKeys([])
+      }
       this.form = {
         id: undefined,
         name: undefined,
-        status: '0'
+        status: '0',
+        menuids: []
       }
       this.resetForm('form')
     },
@@ -214,6 +258,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset()
+      this.getMenutreeselect()
       this.open = true
       this.title = '添加角色'
       this.isEdit = false
@@ -227,6 +272,7 @@ export default {
         this.open = true
         this.title = '修改角色'
         this.isEdit = true
+        this.getRoleMenuTreeselect(roleId)
       })
     },
     /** 角色状态修改 */
@@ -262,6 +308,7 @@ export default {
     // 提交数据按钮
     submit() {
       if (this.isEdit === false) {
+        this.form.menuids = this.getMenuAllCheckedKeys()
         addRole(this.form).then(response => {
           if (response.code === 200) {
             this.msgSuccess(response.msg)
@@ -272,6 +319,7 @@ export default {
           }
         })
       } else {
+        this.form.menuids = this.getMenuAllCheckedKeys()
         editRole(this.form).then(response => {
           if (response.code === 200) {
             this.msgSuccess(response.msg)

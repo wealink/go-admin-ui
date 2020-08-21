@@ -170,10 +170,10 @@ export const constantRouters = [
 // 异步挂载的路由
 // 动态需要根据权限加载的路由表
 export const asyncRouters = [
-  {
+  /* {
     path: '/sys',
     component: Layout,
-    name: '系统管理',
+    name: 'Sys',
     meta: { roles: ['运维组'], title: '系统管理', icon: 'el-icon-s-help' },
     children: [
       {
@@ -189,8 +189,14 @@ export const asyncRouters = [
         meta: { roles: ['运维组'], title: '用户管理', icon: 'tree' }
       },
       {
+        path: 'menu',
+        name: 'Menu',
+        component: () => import('@/views/menu'),
+        meta: { roles: ['运维组'], title: '菜单管理', icon: 'tree' }
+      },
+      {
         path: 'apirule',
-        name: 'Apirule',
+        name: 'apirule',
         component: () => import('@/views/apirule'),
         meta: { roles: ['运维组'], title: '接口权限', icon: 'tree' }
       }
@@ -201,6 +207,7 @@ export const asyncRouters = [
     redirect: '/404',
     hidden: true
   }
+  */
 ]
 
 const createRouter = () => new Router({

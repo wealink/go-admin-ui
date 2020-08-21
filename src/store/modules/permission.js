@@ -1,4 +1,6 @@
 import { asyncRouters, constantRouters } from '@/router'
+import { getRoutes } from '@/api/rolemenu'
+import Layout from '@/layout'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -11,6 +13,37 @@ function hasPermission(roles, route) {
   } else {
     return true
   }
+}
+
+/**
+  * 后台查询的菜单数据拼装成路由格式的数据
+  * @param routes
+  */
+export function generaMenu(routes, data) {
+  data.forEach(item => {
+    const menu = {
+      path: item.path,
+      component: item.componenturl === 'Layout' ? Layout : loadView(item.componenturl),
+      name: item.name,
+      meta: {
+        roles: item.roles,
+        title: item.title,
+        icon: item.icon,
+        noCache: true
+      },
+      // hidden: item.visible !== '0',
+      children: []
+    }
+    if (item.children) {
+      generaMenu(menu.children, item.children)
+    }
+    routes.push(menu)
+  })
+}
+
+export const loadView = (view) => { // 路由懒加载
+  return (resolve) => require(['@/views/' + view], resolve)
+  // return () => import(`@/views${view}`)
 }
 
 /**
@@ -49,14 +82,36 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
-      let accessedRoutes
-      if (roles.includes('运维部')) {
-        accessedRoutes = asyncRouters || []
-      } else {
-        accessedRoutes = filterAsyncRoutes(asyncRouters, roles)
-      }
-      commit('SET_ROUTES', accessedRoutes)
-      resolve(accessedRoutes)
+      let accessedRoutes = ''
+      // if (roles.includes('运维部')) {
+      //  accessedRoutes = asyncRouters || []
+      // } else {
+      //  accessedRoutes = filterAsyncRoutes(asyncRouters, roles)
+      // }
+      const loadMenuData = []
+      getRoutes().then(response => {
+        // console.log(JSON.stringify(response))
+        let data = response
+        if (response.code !== 200) {
+          this.$message({
+            message: '菜单数据加载异常',
+            type: 0
+          })
+        } else {
+          data = response.data
+          Object.assign(loadMenuData, data)
+          generaMenu(asyncRouters, loadMenuData)
+          console.log(asyncRouters)
+          asyncRouters.push({ path: '*', redirect: '/404', hidden: true })
+          accessedRoutes = filterAsyncRoutes(asyncRouters, roles)
+          commit('SET_ROUTES', accessedRoutes)
+          resolve(accessedRoutes)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+      // commit('SET_ROUTES', accessedRoutes)
+      // resolve(accessedRoutes)
     })
   }
 }
