@@ -20,14 +20,14 @@ router.beforeEach(async(to, from, next) => {
   // determine whether the user has logged in
   const hasToken = getToken()
 
-  if (hasToken) {
+  if (hasToken) { // 判断是否有token
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
     } else {
-      const hasrole = store.getters.roles && store.getters.roles.length > 0
-      if (hasrole) {
+      // const hasrole = store.getters.roles && store.getters.roles.length > 0
+      if (store.getters.roles.length !== 0) { // 判断是否拉去用户信息
         next()
       } else {
         try {
@@ -36,7 +36,7 @@ router.beforeEach(async(to, from, next) => {
           const { roles } = await store.dispatch('login/getInfo')
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
           router.addRoutes(accessRoutes)
-          next()
+          next({ ...to, replace: true })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('login/resetToken')
@@ -49,7 +49,6 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()
