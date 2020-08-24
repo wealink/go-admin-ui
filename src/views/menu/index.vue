@@ -14,7 +14,7 @@
     <el-table v-loading="loading" :data="menuList" row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column label="菜单标题" prop="title" :show-overflow-tooltip="true" width="180" />
       <el-table-column label="菜单名" prop="name" width="180" />
-      <el-table-column label="路由路径" prop="path" width="150" />
+      <el-table-column label="路由路径" prop="path" width="180" />
       <el-table-column label="请求方法" prop="method" width="150" />
       <el-table-column label="显示图标" prop="icon" width="150">
         <template slot-scope="scope">
@@ -298,6 +298,7 @@ export default {
       }).then(function() {
         return delMenu(menuId)
       }).then(() => {
+        this.queryParams = {}
         this.getList()
         this.msgSuccess('删除成功')
       }).catch(function() {})
@@ -320,6 +321,7 @@ export default {
           if (response.code === 200) {
             this.msgSuccess(response.msg)
             this.open = false
+            this.queryParams = {}
             this.getList()
           } else {
             this.msgError(response.msg)

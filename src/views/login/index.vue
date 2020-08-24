@@ -43,7 +43,7 @@
 
       <el-form-item prop="code" style="width: 60%;float: left;">
         <span class="svg-container">
-          <svg-icon icon-class="validcode" />
+          <svg-icon icon-class="validCode" />
         </span>
         <el-input
           ref="code"
