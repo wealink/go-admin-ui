@@ -24,7 +24,8 @@ const mutations = {
     state.username = username
   },
   SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+    // state.avatar = avatar
+    state.avatar = process.env.VUE_APP_BASE_API + avatar
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
@@ -69,11 +70,11 @@ const actions = {
     })
   },
 
-  // user logout
+  // 退出登录
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
-        removeToken() // must remove  token  first
+        removeToken()
         resetRouter()
         commit('RESET_STATE')
         resolve()
@@ -86,7 +87,7 @@ const actions = {
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {
-      removeToken() // must remove  token  first
+      removeToken()
       commit('RESET_STATE')
       resolve()
     })
