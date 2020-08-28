@@ -43,7 +43,7 @@ export function delUser(id) {
   })
 }
 
-// 重置用户密码
+// 用户管理 重置用户密码
 export function resetUserPwd(id, password) {
   const data = {
     id,
@@ -52,6 +52,28 @@ export function resetUserPwd(id, password) {
   return request({
     url: '/api/v1/user/' + id,
     method: 'PUT',
+    data: data
+  })
+}
+
+// 个人中心 用户密码重置
+export function updateUserPwd(oldpassword, newpassword) {
+  const data = {
+    oldpassword,
+    newpassword
+  }
+  return request({
+    url: '/api/v1/pwd',
+    method: 'put',
+    data: data
+  })
+}
+
+// 个人中心 用户头像上传
+export function uploadAvatar(data) {
+  return request({
+    url: '/api/v1/uploadavatar',
+    method: 'post',
     data: data
   })
 }

@@ -14,7 +14,10 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+
 import Pagination from '@/components/Pagination' // Pagination
+
+import BasicLayout from '@/layout/BasicLayout'
 import { resetForm } from '@/utils/costum'
 
 /**
@@ -31,6 +34,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
+Vue.component('BasicLayout', BasicLayout)
+
 Vue.prototype.msgSuccess = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'success' })
 }

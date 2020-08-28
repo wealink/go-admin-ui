@@ -53,6 +53,20 @@ export const constantRouters = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
+  },
+  {
+    path: '/profile',
+    component: Layout,
+    redirect: '/profile/index',
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/profile/index'),
+        name: '个人中心',
+        meta: { title: '个人中心', icon: 'user', noCache: true }
+      }
+    ]
   }
   /*
   {
