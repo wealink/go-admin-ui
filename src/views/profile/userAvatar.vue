@@ -70,8 +70,8 @@ export default {
       options: {
         img: store.getters.avatar, // 裁剪图片的地址
         autoCrop: true, // 是否默认生成截图框
-        autoCropWidth: 200, // 默认生成截图框宽度
-        autoCropHeight: 200, // 默认生成截图框高度
+        autoCropWidth: 100, // 默认生成截图框宽度
+        autoCropHeight: 100, // 默认生成截图框高度
         fixedBox: true // 固定截图框大小 不允许改变
       },
       previews: {}
