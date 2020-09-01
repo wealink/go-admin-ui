@@ -17,7 +17,7 @@ export function getInfo() {
 
 export function logout() {
   return request({
-    url: '/logout',
+    url: '/api/v1/logout',
     method: 'get'
   })
 }

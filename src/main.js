@@ -18,7 +18,7 @@ import '@/permission' // permission control
 import Pagination from '@/components/Pagination' // Pagination
 
 import BasicLayout from '@/layout/BasicLayout'
-import { resetForm } from '@/utils/costum'
+import { resetForm, selectDictLabel } from '@/utils/costum'
 
 /**
  * If you don't want to use mock-server
@@ -48,6 +48,7 @@ Vue.prototype.msgInfo = function(msg) {
 
 // 全局方法挂载
 Vue.prototype.resetForm = resetForm
+Vue.prototype.selectDictLabel = selectDictLabel
 
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
