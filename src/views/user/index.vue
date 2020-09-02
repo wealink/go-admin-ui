@@ -1,7 +1,7 @@
 <template>
   <BasicLayout>
     <template #wrapper>
-      <div class="app-container">
+      <el-card class="box-card">
         <el-form ref="queryForm" :model="queryParams" :inline="true">
           <el-form-item label="用户名称" prop="username">
             <el-input
@@ -21,7 +21,7 @@
               style="width: 240px"
             />
           </el-form-item>
-          <el-form-item label="状态" prop="status">
+          <el-form-item label="用户状态" prop="status">
             <el-select
               v-model="queryParams.status"
               placeholder="用户状态"
@@ -55,11 +55,11 @@
 
         </el-row>
         <el-table v-loading="loading" :data="userList">
-          <el-table-column label="用户编号" prop="id" width="120" />
-          <el-table-column label="用户名称" prop="username" :show-overflow-tooltip="true" width="150" />
-          <el-table-column label="角色" prop="rolename" :show-overflow-tooltip="true" width="150" />
-          <el-table-column label="手机号码" prop="phone" :show-overflow-tooltip="true" width="150" />
-          <el-table-column label="状态" align="center" width="100">
+          <el-table-column label="用户编号" prop="id" align="center" />
+          <el-table-column label="用户名称" prop="username" align="center" :show-overflow-tooltip="true" />
+          <el-table-column label="角色" prop="rolename" align="center" :show-overflow-tooltip="true" />
+          <el-table-column label="手机号码" prop="phone" align="center" :show-overflow-tooltip="true" />
+          <el-table-column label="状态" align="center">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -69,9 +69,9 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="created_on" width="180" :formatter="formatCreatedDate" />
-          <el-table-column label="更新时间" align="center" prop="modified_on" width="180" :formatter="formatModifiedDate" />
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column label="创建时间" align="center" prop="created_on" :formatter="formatCreatedDate" />
+          <el-table-column label="更新时间" align="center" prop="modified_on" :formatter="formatModifiedDate" />
+          <el-table-column label="操作" align="center" width="200px" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -139,7 +139,7 @@
             <el-button @click="cancel">取 消</el-button>
           </div>
         </el-dialog>
-      </div>
+      </el-card>
     </template>
   </BasicLayout>
 </template>

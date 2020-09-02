@@ -1,121 +1,125 @@
 <template>
-  <div class="app-container">
-    <el-form ref="queryForm" :model="queryParams" :inline="true">
-      <el-form-item label="角色名称" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入角色名称"
-          clearable
-          size="small"
-          style="width: 240px"
+  <BasicLayout>
+    <template #wrapper>
+      <el-card class="box-card">
+        <el-form ref="queryForm" :model="queryParams" :inline="true">
+          <el-form-item label="角色名称" prop="name">
+            <el-input
+              v-model="queryParams.name"
+              placeholder="请输入角色名称"
+              clearable
+              size="small"
+              style="width: 240px"
+            />
+          </el-form-item>
+          <el-form-item label="角色状态" prop="status">
+            <el-select
+              v-model="queryParams.status"
+              placeholder="角色状态"
+              clearable
+              size="small"
+              style="width: 240px"
+            >
+              <el-option
+                v-for="dict in statusOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button
+              type="primary"
+              icon="el-icon-plus"
+              size="mini"
+              @click="handleAdd"
+            >新增</el-button>
+          </el-col>
+
+        </el-row>
+        <el-table v-loading="loading" :data="roleList">
+          <el-table-column label="角色编号" prop="id" align="center" />
+          <el-table-column label="角色名称" prop="name" align="center" :show-overflow-tooltip="true" />
+          <el-table-column label="状态" align="center">
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.status"
+                active-value="0"
+                inactive-value="1"
+                @change="handleStatusChange(scope.row)"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="创建时间" align="center" prop="created_on" :formatter="formatCreatedDate" />
+          <el-table-column label="更新时间" align="center" prop="modified_on" :formatter="formatModifiedDate" />
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-edit"
+                @click="handleUpdate(scope.row)"
+              >修改</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.row)"
+              >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="queryParams.pageIndex"
+          :limit.sync="queryParams.pageSize"
+          @pagination="getList"
         />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="角色状态"
-          clearable
-          size="small"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
-      </el-col>
-
-    </el-row>
-    <el-table v-loading="loading" :data="roleList">
-      <el-table-column label="角色编号" prop="id" width="120" />
-      <el-table-column label="角色名称" prop="name" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="状态" align="center" width="100">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.status"
-            active-value="0"
-            inactive-value="1"
-            @change="handleStatusChange(scope.row)"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="created_on" width="180" :formatter="formatCreatedDate" />
-      <el-table-column label="更新时间" align="center" prop="modified_on" width="180" :formatter="formatModifiedDate" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageIndex"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    <!-- 添加或修改角色配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form.name" placeholder="请输入角色名称" :disabled="isEdit" />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="菜单权限">
-          <el-tree
-            ref="menu"
-            :data="menuOptions"
-            show-checkbox
-            node-key="id"
-            empty-text="加载中，请稍后"
-            :props="defaultProps"
-          />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submit">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
-  </div>
+        <!-- 添加或修改角色配置对话框 -->
+        <el-dialog :title="title" :visible.sync="open" width="500px">
+          <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+            <el-form-item label="角色名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入角色名称" :disabled="isEdit" />
+            </el-form-item>
+            <el-form-item label="状态">
+              <el-radio-group v-model="form.status">
+                <el-radio
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="菜单权限">
+              <el-tree
+                ref="menu"
+                :data="menuOptions"
+                show-checkbox
+                node-key="id"
+                empty-text="加载中，请稍后"
+                :props="defaultProps"
+              />
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="submit">确 定</el-button>
+            <el-button @click="cancel">取 消</el-button>
+          </div>
+        </el-dialog>
+      </el-card>
+    </template>
+  </BasicLayout>
 </template>
 <script>
 import { listRole, getRole, addRole, delRole, editRole } from '@/api/role'
