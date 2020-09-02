@@ -1,7 +1,11 @@
 <template>
-  <div class="dashboard-container">
-    <div class="dashboard-text">username: {{ username }}</div>
-  </div>
+  <BasicLayout>
+    <template #wrapper>
+      <el-card class="box-card">
+        <div class="dashboard-text">username: {{ username }}</div>
+      </el-card>
+    </template>
+  </BasicLayout>
 </template>
 
 <script>
