@@ -54,7 +54,7 @@
           <el-table-column label="浏览器" align="center" prop="browser" />
           <el-table-column label="操作系统" align="center" prop="os" />
           <el-table-column label="登录状态" width="80" align="center" prop="status" :formatter="statusFormat" />
-          <el-table-column label="操作信息" width="90" align="center" prop="msg" />
+          <el-table-column label="操作信息" width="250" align="center" prop="msg" />
           <el-table-column label="登录日期" align="center" prop="logintime" width="180" :formatter="formatDate" />
         </el-table>
         <pagination
